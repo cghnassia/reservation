@@ -30,20 +30,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "get_session_from_auth_token" do
     it "return correctly the session" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.get_session_from_auth_token(@request)).to eq(session)
     end
 
     it "return false if the request does not contain HTTP_AUTHORIZATION" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id)
       expect(AuthenticationHelper.get_session_from_auth_token(@request)).to be(false)
     end
 
     it "return false if the request contain an invalid token" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.new(:user_id => user.id)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.get_session_from_auth_token(@request)).to be(false)
@@ -52,20 +52,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "get_user_from_auth_token" do
     it "return correctly the user" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.get_user_from_auth_token(@request)).to eq(user)
     end
 
     it "return false if the request does not contain HTTP_AUTHORIZATION" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id)
       expect(AuthenticationHelper.get_user_from_auth_token(@request)).to be(false)
     end
 
     it "return false if the request contain an invalid token" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.new(:user_id => user.id)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.get_session_from_auth_token(@request)).to be(false)
@@ -74,21 +74,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "get_user_from_auth_token" do
     it "return true for authenticated user" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.authenticated?(@request)).to be(true)
     end
 
     it "return false for unauthenticated user" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
-      session = Session.new(:user_id => user.id)
-      @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
+      user = create(:user)
+      @request.env["HTTP_AUTHORIZATION"] = "Token token=\"arandomchoosentoken\""
       expect(AuthenticationHelper.authenticated?(@request)).to be(false)
     end
 
     it "return false for user with timeout session" do
-      user = User.create(:email => 'foo@mail.com', :password => 'secret', :activated => true)
+      user = create(:user)
       session = Session.create(:user_id => user.id, :updated_at => DateTime.now - 1.day)
       @request.env["HTTP_AUTHORIZATION"] = "Token token=\"#{session.auth_token}\""
       expect(AuthenticationHelper.authenticated?(@request)).to be(false)
