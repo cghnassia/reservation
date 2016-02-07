@@ -35,7 +35,7 @@ RSpec.describe AuthenticationController, type: :controller do
   #  end
   #end
 
-  describe "POST sign_in_oauth" do
+  describe "POST sign_in" do
     it "returns http success" do
       api_token = 'abc123'
 
@@ -74,7 +74,7 @@ RSpec.describe AuthenticationController, type: :controller do
           }]
         }.to_json)
       
-      post :sign_in_oauth, :code => 'mycode'
+      post :sign_in, :api_code => 'mycode'
       session = User.find(1).sessions.last
 
       expect(response).to have_http_status(:success)

@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  post 'authentication/sign_in'
-  post 'authentication/sign_in_oauth'
-  post 'authentication/sign_out'
+  post 'sign_in' => 'authentication#sign_in'
+  post 'sign_out' => 'authentication#sign_out'
+
+  get 'people/index'
+  get 'people/show'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

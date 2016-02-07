@@ -1,22 +1,9 @@
 class AuthenticationController < ApplicationController
-  layout :false
   before_action :verify_authentication, only: [:sign_out]
 
   def sign_in
-  	if params.has_key?(:user)
-	  	user = User.authenticate(params[:user][:email], params[:user][:password])
-	  	if user
-	  		@session = Session.create(:user_id => user.id)
-	  		return render json: @session, status: :ok
-	  	end
-    end
-    
-  	render json: {error: 'bad credentials'}, status: :unauthorized
-  end
-
-  def sign_in_oauth
-    if params.has_key?(:code)
-      access_token = FrontdeskApiHelper.get_access_token(params[:code])
+    if params.has_key?(:api_code)
+      access_token = FrontdeskApiHelper.get_access_token(params[:api_code])
       if access_token
         user_data = FrontdeskApiHelper.get_user_details(access_token)
         user = User.find_by_id(user_data['id'])
